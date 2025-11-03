@@ -1,0 +1,44 @@
+services:
+  cassandra:
+    image: ${CASSANDRA_IMAGE}
+    container_name: ${CASSANDRA_CONTAINER}
+    ports:
+      - "${CASSANDRA_PORT}:${CASSANDRA_PORT}"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=${CASSANDRA_CLUSTER_NAME}
+      - CASSANDRA_DC=${CASSANDRA_DC}
+      - CASSANDRA_RACK=${CASSANDRA_RACK}
+      - CASSANDRA_ENDPOINT_SNITCH=${CASSANDRA_SNITCH}
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    networks:
+      - url_shortener_network
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'DESCRIBE KEYSPACES'"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  api:
+    build: .
+    container_name: ${API_SERVICE_NAME}
+    command: npm run start:dev
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - url_shortener_network
+
+networks:
+  url_shortener_network:
+    driver: bridge
+
+volumes:
+  cassandra_data:
