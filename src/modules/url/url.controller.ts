@@ -9,7 +9,6 @@ export class UrlController{
 
     @Post()
     async setUrl(@Body('url') url: string) {
-        console.log(url)
         return await this.urlService.setUrl(url);
     }
 
@@ -17,7 +16,6 @@ export class UrlController{
     @Redirect()
     async getUrl(@Param('url') shortUrl: string) {
         const longUrl = await this.urlService.getUrl(shortUrl);
-        console.log("url =", longUrl)
 
         return { url: longUrl, statusCode: 302 };
     }

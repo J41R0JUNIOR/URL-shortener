@@ -17,11 +17,8 @@ export class UrlService {
         }
 
         const id = await this.idRepository.getId();
-        console.log("receba o id: "+id)
         const shortUrl = encodeBase62(id);
-        console.log("receba o id encodado para 62:" + shortUrl);
         const url = new Url(shortUrl, longUrl);
-        console.log(url)
 
         return await this.urlRepository.saveUrl(url);
     }
