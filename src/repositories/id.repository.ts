@@ -4,7 +4,6 @@ import { Url } from "src/models/url.model";
 
 export abstract class IdRepository {
     abstract getId(): Promise<number>;
-    
 }
 
 @Injectable()

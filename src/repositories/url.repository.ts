@@ -26,19 +26,6 @@ export class UrlRepositoryImplementation implements UrlRepository {
         } as Url;
     }
 
-    // async saveUrl(url: Url): Promise<Url | null> {
-    //     const query = 'INSERT INTO urls (shortUrl, longUrl) VALUES (?, ?)';
-    //     const result = await this.client.execute(query, [url.shortUrl, url.longUrl], { prepare: true });
-
-    //     if (result.rowLength === 0) return null;
-
-    //     const row = result.first();
-    //     return {
-    //         shortUrl: row.get('shorturl'),
-    //         longUrl: row.get('longurl'),
-    //     } as Url;
-    // }
-
     async saveUrl(url: Url): Promise<Url> {
         const query = 'INSERT INTO urls (shortUrl, longUrl) VALUES (?, ?)';
         await this.client.execute(query, [url.shortUrl, url.longUrl], { prepare: true });
