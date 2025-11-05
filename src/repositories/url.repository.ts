@@ -3,6 +3,7 @@ import { Client } from "cassandra-driver";
 import { Url } from "src/models/url.model";
 
 export abstract class UrlRepository {
+    abstract saveUrl(url: Url): Promise<Url | null>;
     abstract getByUrl(url: string): Promise<Url | null>;
 }
 
@@ -25,8 +26,24 @@ export class UrlRepositoryImplementation implements UrlRepository {
         } as Url;
     }
 
-    async saveUrl(url: Url): Promise<void> {
+    // async saveUrl(url: Url): Promise<Url | null> {
+    //     const query = 'INSERT INTO urls (shortUrl, longUrl) VALUES (?, ?)';
+    //     const result = await this.client.execute(query, [url.shortUrl, url.longUrl], { prepare: true });
+
+    //     if (result.rowLength === 0) return null;
+
+    //     const row = result.first();
+    //     return {
+    //         shortUrl: row.get('shorturl'),
+    //         longUrl: row.get('longurl'),
+    //     } as Url;
+    // }
+
+    async saveUrl(url: Url): Promise<Url> {
         const query = 'INSERT INTO urls (shortUrl, longUrl) VALUES (?, ?)';
         await this.client.execute(query, [url.shortUrl, url.longUrl], { prepare: true });
+
+        return url;
     }
+
 }

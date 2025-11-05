@@ -17,18 +17,19 @@ export const cassandraClientProvider = {
     console.log('Cassandra connected');
 
     await client.execute(`
-  CREATE KEYSPACE IF NOT EXISTS ${process.env.CASSANDRA_KEYSPACE || 'url_shortener'}
-  WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
-`);
+      CREATE KEYSPACE IF NOT EXISTS ${process.env.CASSANDRA_KEYSPACE || 'url_shortener'}
+      WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+    `);
 
     await client.execute(`USE ${process.env.CASSANDRA_KEYSPACE || 'url_shortener'}`);
 
     await client.execute(`
-  CREATE TABLE IF NOT EXISTS urls (
-    shortUrl TEXT PRIMARY KEY,
-    longUrl TEXT
-  )
-`);
+      CREATE TABLE IF NOT EXISTS urls (
+        shortUrl TEXT PRIMARY KEY,
+        longUrl TEXT
+      )
+    `);
+    
     console.log('Url table created');
 
     return client;

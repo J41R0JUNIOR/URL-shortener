@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Redirect } from "@nestjs/common";
 import { UrlService } from "./url.service";
 
 @Controller('api/url-shortener')
@@ -7,8 +7,18 @@ export class UrlController{
         private readonly urlService: UrlService
     ) {}
 
+    @Post()
+    async setUrl(@Body('url') url: string) {
+        console.log(url)
+        return await this.urlService.setUrl(url);
+    }
+
     @Get(':url')
-    async getUrl(@Param('url') url: string) {
-        return await this.urlService.getUrl(url);
+    @Redirect()
+    async getUrl(@Param('url') shortUrl: string) {
+        const longUrl = await this.urlService.getUrl(shortUrl);
+        console.log("url =", longUrl)
+
+        return { url: longUrl, statusCode: 302 };
     }
 }
