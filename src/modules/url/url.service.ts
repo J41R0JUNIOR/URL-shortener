@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { Url } from "src/models/url.model";
 import { IdRepository } from "src/repositories/id.repository";
 import { UrlRepository } from "src/repositories/url.repository";
+import encodeBase62 from "src/util/encodeBase62";
 
 @Injectable()
 export class UrlService {
@@ -20,7 +21,11 @@ export class UrlService {
         const shortUrl = encodeBase62(id);
         const url = new Url(shortUrl, longUrl);
 
-        return await this.urlRepository.saveUrl(url);
+        const x = await this.urlRepository.saveUrl(url);
+
+        return {
+            shortUrl: `${process.env.API_URL}/url-shortener/` + x?.shortUrl
+        };
     }
 
     async getUrl(shortUrl: string) {
@@ -32,14 +37,4 @@ export class UrlService {
 
         return url.longUrl
     }
-}
-
-function encodeBase62(num: number): string {
-    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    let base62 = '';
-    while (num) {
-        base62 = chars[num % 62] + base62;
-        num = Math.floor(num / 62);
-    }
-    return base62;
 }

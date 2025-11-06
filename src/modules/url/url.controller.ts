@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Redirect } from "@nestjs/common";
 import { UrlService } from "./url.service";
 
-@Controller('api/url-shortener')
+@Controller('url-shortener')
 export class UrlController{
     constructor(
         private readonly urlService: UrlService
